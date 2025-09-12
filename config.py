@@ -5,8 +5,12 @@ BASE_URL = "https://congbobanan.toaan.gov.vn/0tat1cvn/ban-an-quyet-dinh"
 BASE_DOMAIN = "https://congbobanan.toaan.gov.vn"
 DATASET_DIR = "./dataset"
 CHECKPOINT_DIR = "./checkpoints"
-BATCH_SIZE = 1
-NUM_BATCHES = 9
+
+# Cấu hình batch - sẽ được tính toán tự động
+DEFAULT_MAX_PAGES = 100  # Số page tối đa mặc định
+DEFAULT_BATCH_SIZE = 10  # Kích thước batch mặc định
+MIN_BATCH_SIZE = 1       # Kích thước batch tối thiểu
+MAX_BATCH_SIZE = 50      # Kích thước batch tối đa
 
 # Cấu hình form parameters
 DROP_LEVELS_OPTIONS = {
