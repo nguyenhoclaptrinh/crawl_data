@@ -19,8 +19,8 @@ def main(max_pages, batch_size, num_batches, drop_levels):
     for ckpt in checkpoints:
         if ckpt["drop_levels"] == drop_levels:
             batch_ckpt_map[ckpt["batch_number"]] = load_checkpoint(drop_levels, ckpt["batch_number"])
-    max_workers = min(10, num_batches)
-    print(f"\n🧵 Sử dụng tối đa {max_workers} luồng song song!")
+    max_workers = num_batches
+    print(f"\n🧵 Sử dụng {max_workers} luồng song song!")
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = []
         for job in batch_jobs:

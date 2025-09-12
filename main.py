@@ -38,13 +38,13 @@ def get_user_configuration():
             print("❌ Vui lòng nhập số nguyên hợp lệ")
     while True:
         try:
-            num_batches_input = input(f"🔢 Nhập số batch (luồng) muốn chạy song song (1-10, mặc định 5): ").strip()
+            num_batches_input = input(f"🔢 Nhập số batch (luồng) muốn chạy song song (>=1, mặc định 5): ").strip()
             if not num_batches_input:
                 num_batches = 5
             else:
                 num_batches = int(num_batches_input)
-                if num_batches < 1 or num_batches > 10:
-                    print("❌ Số batch phải từ 1 đến 10")
+                if num_batches < 1:
+                    print("❌ Số batch phải >= 1")
                     continue
             break
         except ValueError:
