@@ -359,47 +359,15 @@ def choose_new_batch(max_pages, batch_size, num_batches):
     """Cho phép user chọn DROP_LEVELS và batch để tạo mới"""
     print("\n🆕 TẠO BATCH MỚI")
     print("-" * 30)
-
-    # Chọn DROP_LEVELS
+    # Chỉ cho phép user chọn DROP_LEVELS
     drop_levels = input(
         f"Chọn cấp tòa án (TW/CW/T/H hoặc Enter cho {DEFAULT_DROP_LEVELS}): ").strip().upper()
     if not drop_levels:
         drop_levels = DEFAULT_DROP_LEVELS
-
     if drop_levels not in DROP_LEVELS_OPTIONS:
-        print(
-            f"❌ Cấp '{drop_levels}' không hợp lệ, sử dụng mặc định '{DEFAULT_DROP_LEVELS}'")
+        print(f"❌ Cấp '{drop_levels}' không hợp lệ, sử dụng mặc định '{DEFAULT_DROP_LEVELS}'")
         drop_levels = DEFAULT_DROP_LEVELS
-
-    # Hiển thị các batch có sẵn
-    print(f"\n📦 Các batch có sẵn (total {num_batches} batches):")
-    for i in range(1, num_batches + 1):
-        start_page, end_page = get_batch_page_range(i, batch_size, max_pages)
-        print(
-            f"  Batch {i}: Pages {start_page}-{end_page} ({end_page - start_page + 1} pages)")
-
-    # Chọn batch
-    while True:
-        try:
-            batch_num = int(input(f"Chọn số batch (1-{num_batches}): "))
-            if 1 <= batch_num <= num_batches:
-                break
-            else:
-                print(f"❌ Batch phải từ 1 đến {num_batches}")
-        except ValueError:
-            print("❌ Vui lòng nhập số nguyên hợp lệ")
-
-    # Tính toán start_page và end_page
-    start_page, end_page = get_batch_page_range(
-        batch_num, batch_size, max_pages)
-
-    print(f"\n✅ Sẽ tạo batch mới:")
-    print(
-        f"   📂 DROP_LEVELS: {drop_levels} ({DROP_LEVELS_OPTIONS[drop_levels]})")
-    print(f"   📦 Batch: {batch_num}/{num_batches}")
-    print(
-        f"   📄 Pages: {start_page} - {end_page} ({end_page - start_page + 1} pages)")
-
+    print(f"\n✅ Sẽ tạo batch đa luồng cho cấp tòa án: {drop_levels} ({DROP_LEVELS_OPTIONS[drop_levels]})")
     return drop_levels
 
 
