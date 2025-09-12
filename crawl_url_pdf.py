@@ -25,7 +25,13 @@ def download_pdf(url, session):
             pdf_response = session.get(pdf_url, verify=False)
             pdf_response.raise_for_status()
             
-            filename = pdf_url.split("/")[-1]
+            # Thay đổi cách đặt tên file: lấy phần kế cuối từ URL detail page
+            url_parts = url.rstrip('/').split('/')
+            if len(url_parts) >= 2:
+                filename = f"{url_parts[-2]}.pdf"  # Lấy phần kế cuối
+            else:
+                filename = pdf_url.split("/")[-1]  # Fallback về tên file gốc
+            
             with open(f"{DATASET_DIR}/{filename}", "wb") as f:
                 f.write(pdf_response.content)
             print(f"Downloaded: {filename}")
