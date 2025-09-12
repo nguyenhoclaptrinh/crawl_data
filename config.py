@@ -7,3 +7,6 @@ DATASET_DIR = "./dataset"
 CHECKPOINT_FILE = "checkpoint.json"
 BATCH_SIZE = 1
 NUM_BATCHES = 9
+
+# Cấu hình form parameters
+DROP_LEVELS = "T"

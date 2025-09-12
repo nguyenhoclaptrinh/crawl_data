@@ -6,7 +6,7 @@ import urllib3
 import time
 import os
 from crawl_url_pdf import download_pdf
-from config import BASE_URL, BASE_DOMAIN, DATASET_DIR, CHECKPOINT_FILE, BATCH_SIZE, NUM_BATCHES
+from config import BASE_URL, BASE_DOMAIN, DATASET_DIR, CHECKPOINT_FILE, BATCH_SIZE, NUM_BATCHES, DROP_LEVELS, SEARCH_KEYWORD
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -83,7 +83,7 @@ def create_payload(hidden_fields, page):
         return {
             **hidden_fields,
             "ctl00$Content_home_Public$ctl00$txtKeyword": "Nhập tên vụ/việc hoặc số bản án, quyết định",
-            "ctl00$Content_home_Public$ctl00$Drop_Levels": "T",
+            "ctl00$Content_home_Public$ctl00$Drop_Levels": DROP_LEVELS,
             "ctl00$Content_home_Public$ctl00$Ra_Drop_Courts": "",
             "ctl00$Content_home_Public$ctl00$Rad_DATE_FROM": "",
             "ctl00$Content_home_Public$ctl00$cmd_search_banner": "Tìm kiếm"
@@ -92,7 +92,7 @@ def create_payload(hidden_fields, page):
         return {
             **hidden_fields,
             "ctl00$Content_home_Public$ctl00$txtKeyword": "Nhập tên vụ/việc hoặc số bản án, quyết định",
-            "ctl00$Content_home_Public$ctl00$Drop_Levels": "T",
+            "ctl00$Content_home_Public$ctl00$Drop_Levels": DROP_LEVELS,
             "ctl00$Content_home_Public$ctl00$Ra_Drop_Courts": "",
             "ctl00$Content_home_Public$ctl00$Rad_DATE_FROM": "",
             "ctl00$Content_home_Public$ctl00$DropPages": str(page),
