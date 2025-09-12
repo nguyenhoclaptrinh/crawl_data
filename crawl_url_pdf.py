@@ -7,7 +7,7 @@ from config import BASE_DOMAIN, DATASET_DIR
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def download_pdf(url, session):
+def download_pdf(url, session, drop_levels=None, page_num=None, pdf_index=None):
     try:
         response = session.get(url, verify=False)
         response.raise_for_status()
@@ -25,13 +25,16 @@ def download_pdf(url, session):
             pdf_response = session.get(pdf_url, verify=False)
             pdf_response.raise_for_status()
             
-            # Thay đổi cách đặt tên file: lấy phần kế cuối từ URL detail page
-            url_parts = url.rstrip('/').split('/')
-            if len(url_parts) >= 2:
-                filename = f"{url_parts[-2]}.pdf"  # Lấy phần kế cuối
+            # Đặt tên file: Droplevel + số page + index.pdf
+            if drop_levels is not None and page_num is not None and pdf_index is not None:
+                filename = f"{drop_levels}_{page_num}_{pdf_index}.pdf"
             else:
-                filename = pdf_url.split("/")[-1]  # Fallback về tên file gốc
-            
+                # fallback cũ
+                url_parts = url.rstrip('/').split('/')
+                if len(url_parts) >= 2:
+                    filename = f"{url_parts[-2]}.pdf"
+                else:
+                    filename = pdf_url.split("/")[-1]
             with open(f"{DATASET_DIR}/{filename}", "wb") as f:
                 f.write(pdf_response.content)
             print(f"Downloaded: {filename}")
