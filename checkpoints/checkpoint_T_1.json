@@ -1,0 +1,17 @@
+{
+  "drop_levels": "T",
+  "drop_levels_name": "Tòa án nhân dân cấp tỉnh",
+  "batch_number": 1,
+  "start_page": 1,
+  "end_page": 1,
+  "last_processed_page": 1,
+  "total_links_found": 20,
+  "total_pdfs_downloaded": 20,
+  "failed_pages": [],
+  "completed_pages": [
+    1
+  ],
+  "created_at": 1757700294.6901143,
+  "last_updated": 1757700326.1815405,
+  "is_completed": true
+}
