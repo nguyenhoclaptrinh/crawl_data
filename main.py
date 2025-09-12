@@ -5,9 +5,8 @@ import urllib3
 import time
 import os
 from crawl_url_pdf import download_pdf
+from config import BASE_URL, BASE_DOMAIN, DATASET_DIR, CHECKPOINT_FILE, BATCH_SIZE, NUM_BATCHES
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-BASE_URL = "https://congbobanan.toaan.gov.vn/0tat1cvn/ban-an-quyet-dinh"
 
 def get_hidden_fields(response):
     try:
@@ -33,8 +32,7 @@ hidden_fields = get_hidden_fields(response.text)
 all_links = []
 pair_list = []
 checkpoint_dict = {}
-BATCH_SIZE = 1
-for i in range(1, 10):
+for i in range(1, NUM_BATCHES + 1):
     start = (i - 1) * BATCH_SIZE + 1
     end = i * BATCH_SIZE
     pair_list.append((start, end))
@@ -43,15 +41,15 @@ for i in range(1, 10):
 # pair_list[-1] = (9001, 9136) 
 
 import json
-if os.path.exists("checkpoint.json"):
-    with open("checkpoint.json", "r") as f:
+if os.path.exists(CHECKPOINT_FILE):
+    with open(CHECKPOINT_FILE, "r") as f:
         checkpoint_dict = json.load(f)
         print("Loaded checkpoint:", checkpoint_dict)
 else:
-    with open("checkpoint.json", "w") as f:
+    with open(CHECKPOINT_FILE, "w") as f:
         json.dump(checkpoint_dict, f)
 
-for i in range(1, 10):
+for i in range(1, NUM_BATCHES + 1):
     if checkpoint_dict[str(i)] != 0:
         print(f"Batch {i} already completed up to page {checkpoint_dict[str(i)]}. Skipping.")
     else:
@@ -102,7 +100,7 @@ for page in range(pair_list[input_str - 1][0], pair_list[input_str - 1][1] + 1):
         for link in links: 
             text_split = link.split("/")
             if len(text_split) > 2 and text_split[2] == "chi-tiet-ban-an":
-                full_link = "https://congbobanan.toaan.gov.vn" + link
+                full_link = BASE_DOMAIN + link
                 all_links.append(full_link)
         
         hidden_fields = get_hidden_fields(response.text)
@@ -116,13 +114,13 @@ set_all_links = set(all_links)
 list_all_links = list(set_all_links)
 print(f"Total unique links collected: {len(list_all_links)}")
 
-if not os.path.exists("./dataset"):
-    os.makedirs("./dataset")
+if not os.path.exists(DATASET_DIR):
+    os.makedirs(DATASET_DIR)
 
 for i, link in enumerate(list_all_links):
     print(f"{i+1}: {link}")
     download_pdf(link, session)
     
 checkpoint_dict[str(input_str)] = 1
-with open("checkpoint.json", "w") as f:
+with open(CHECKPOINT_FILE, "w") as f:
     json.dump(checkpoint_dict, f)
