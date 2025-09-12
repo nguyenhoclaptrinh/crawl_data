@@ -400,7 +400,7 @@ def choose_new_batch(max_pages, batch_size, num_batches):
     print(
         f"   📄 Pages: {start_page} - {end_page} ({end_page - start_page + 1} pages)")
 
-    return drop_levels, batch_num, start_page, end_page, None
+    return drop_levels
 
 
 def choose_existing_batch(checkpoints):
@@ -587,7 +587,7 @@ def main():
         })
 
     # Hiển thị trạng thái checkpoint và cho user chọn DROP_LEVELS
-    drop_levels, _, _, _, _ = display_checkpoint_status_and_choose(
+    drop_levels = display_checkpoint_status_and_choose(
         max_pages, batch_size, num_batches)
 
     # Chuẩn bị checkpoint cho từng batch (nếu có)
