@@ -9,8 +9,11 @@ def batch_worker(drop_levels, batch_num, start_page, end_page, max_pages, batch_
     print(f"\n🚀 [BATCH {batch_num}] Bắt đầu từ page {start_page} đến {end_page} (DROP_LEVELS={drop_levels})")
     if existing_checkpoint:
         checkpoint_data = existing_checkpoint
-        print(f"[BATCH {batch_num}] 🔄 Tiếp tục từ page {checkpoint_data['last_processed_page'] + 1}")
-        start_from_page = checkpoint_data['last_processed_page'] + 1
+        if checkpoint_data['last_processed_page'] == 0:
+            start_from_page = start_page
+        else:
+            start_from_page = checkpoint_data['last_processed_page'] + 1
+        print(f"[BATCH {batch_num}] 🔄 Tiếp tục từ page {start_from_page}")
     else:
         checkpoint_data = create_checkpoint_structure(
             drop_levels, batch_num, start_page, end_page, max_pages, batch_size)
