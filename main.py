@@ -36,32 +36,50 @@ def get_user_configuration():
             break
         except ValueError:
             print("❌ Vui lòng nhập số nguyên hợp lệ")
+
     while True:
         try:
-            num_batches_input = input(f"🔢 Nhập số batch (luồng) muốn chạy song song (>=1, mặc định 5): ").strip()
-            if not num_batches_input:
-                num_batches = 5
+            total_batches_input = input(f"🔢 Nhập tổng số batch muốn tạo (ví dụ 100) (mặc định 5): ").strip()
+            if not total_batches_input:
+                total_batches = 5
             else:
-                num_batches = int(num_batches_input)
-                if num_batches < 1:
-                    print("❌ Số batch phải >= 1")
+                total_batches = int(total_batches_input)
+                if total_batches < 1:
+                    print("❌ Tổng số batch phải >= 1")
                     continue
             break
         except ValueError:
             print("❌ Vui lòng nhập số nguyên hợp lệ")
-    batch_size = (max_pages + num_batches - 1) // num_batches
+
+    while True:
+        try:
+            num_threads_input = input(f"🧵 Nhập số luồng (threads) muốn chạy song song (mặc định 5): ").strip()
+            if not num_threads_input:
+                num_threads = 5
+            else:
+                num_threads = int(num_threads_input)
+                if num_threads < 1:
+                    print("❌ Số luồng phải >= 1")
+                    continue
+            break
+        except ValueError:
+            print("❌ Vui lòng nhập số nguyên hợp lệ")
+
+    # Compute batch size from pages and total batches
+    batch_size = (max_pages + total_batches - 1) // total_batches
     print(f"\n✅ Cấu hình đã chọn:")
     print(f"   📄 Max pages: {max_pages}")
-    print(f"   🔢 Số batch (luồng): {num_batches}")
+    print(f"   🔢 Tổng batches: {total_batches}")
+    print(f"   🧵 Luồng (threads): {num_threads}")
     print(f"   📦 Batch size: {batch_size}")
-    print(f"   📊 Pages trong batch cuối: {max_pages - batch_size * (num_batches-1)}")
-    return max_pages, batch_size, num_batches
+    print(f"   📊 Pages trong batch cuối: {max_pages - batch_size * (total_batches-1)}")
+    return max_pages, batch_size, total_batches, num_threads
 
-def display_checkpoint_status_and_choose(max_pages, batch_size, num_batches):
+def display_checkpoint_status_and_choose(max_pages, batch_size, total_batches):
     print("\n" + "="*80)
     print("📊 HỆ THỐNG CHECKPOINT THEO DROP_LEVELS + BATCH")
     print("="*80)
-    print(f"📄 Configuration: {max_pages} pages, batch size {batch_size}, {num_batches} batches")
+    print(f"📄 Configuration: {max_pages} pages, batch size {batch_size}, {total_batches} batches")
     from config import DROP_LEVELS_OPTIONS, DEFAULT_DROP_LEVELS
     print("\n🎯 Các cấp tòa án:")
     for key, name in DROP_LEVELS_OPTIONS.items():
@@ -98,8 +116,8 @@ if __name__ == "__main__":
                 print(f"✅ Đã xóa toàn bộ checkpoint trong {CHECKPOINT_DIR}")
             else:
                 print("Không có thư mục checkpoint để xóa.")
-        max_pages, batch_size, num_batches = get_user_configuration()
-        drop_levels = display_checkpoint_status_and_choose(max_pages, batch_size, num_batches)
-        run_batches(max_pages, batch_size, num_batches, drop_levels)
+        max_pages, batch_size, total_batches, num_threads = get_user_configuration()
+        drop_levels = display_checkpoint_status_and_choose(max_pages, batch_size, total_batches)
+        run_batches(max_pages, batch_size, total_batches, num_threads, drop_levels)
     except KeyboardInterrupt:
         print("\n⏹️ Đã dừng chương trình (Ctrl+C)")

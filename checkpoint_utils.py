@@ -26,6 +26,8 @@ def create_checkpoint_structure(drop_levels, batch_num, start_page, end_page, ma
         "total_links_found": 0,
         "total_pdfs_downloaded": 0,
         "failed_pages": [],
+        # Track retry counts per page as strings -> int (json-safe keys)
+        "page_retry_counts": {},
         "completed_pages": [],
         "created_at": time.time(),
         "last_updated": time.time(),
@@ -42,6 +44,9 @@ def load_checkpoint(drop_levels, batch_num):
             print(f"   ✏️  Last processed: {checkpoint_data['last_processed_page']}")
             print(f"   🔗 Links found: {checkpoint_data['total_links_found']}")
             print(f"   📥 PDFs downloaded: {checkpoint_data['total_pdfs_downloaded']}")
+            # If retry information exists, show a compact summary
+            if "page_retry_counts" in checkpoint_data and checkpoint_data["page_retry_counts"]:
+                print(f"   🔁 Page retry counts: {checkpoint_data['page_retry_counts']}")
             return checkpoint_data
     else:
         print(f"❌ Không tìm thấy checkpoint: {get_checkpoint_filename(drop_levels, batch_num)}")
@@ -73,6 +78,11 @@ def update_checkpoint_progress(checkpoint_data, page_num, links_found, success=T
     else:
         if page_num not in checkpoint_data["failed_pages"]:
             checkpoint_data["failed_pages"].append(page_num)
+        # increment retry count for this page (store as string key to be json-safe)
+        if "page_retry_counts" not in checkpoint_data:
+            checkpoint_data["page_retry_counts"] = {}
+        key = str(page_num)
+        checkpoint_data["page_retry_counts"][key] = checkpoint_data["page_retry_counts"].get(key, 0) + 1
     if checkpoint_data["last_processed_page"] >= checkpoint_data["end_page"]:
         checkpoint_data["is_completed"] = True
     return checkpoint_data
