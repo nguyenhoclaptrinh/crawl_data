@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import urllib3
 import time
 from config import BASE_DOMAIN, DATASET_DIR
+from pdf_to_text import process_file
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

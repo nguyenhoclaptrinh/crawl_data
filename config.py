@@ -6,6 +6,8 @@ BASE_DOMAIN = "https://congbobanan.toaan.gov.vn"
 DATASET_DIR = "E:/CRAWL_DATA"
 CHECKPOINT_DIR = "./checkpoints"
 
+DATASET_CLEANING_DIR = "E:/Dataset_Cleaning"
+
 # Cấu hình batch - sẽ được tính toán tự động
 DEFAULT_MAX_PAGES = 100  # Số page tối đa mặc định
 DEFAULT_BATCH_SIZE = 10  # Kích thước batch mặc định
