@@ -18,6 +18,7 @@ from config import DEFAULT_MAX_PAGES
 from checkpoint_utils import list_all_checkpoints
 from crawl_utils import get_hidden_fields, initialize_session
 from main_batch import main as run_batches
+from pdf_queue_worker import start_pdf_converter_workers, stop_pdf_converter_workers
 
 def get_user_configuration():
     print("\n" + "="*60)
@@ -107,6 +108,10 @@ import os
 if __name__ == "__main__":
     try:
         print("🚀 CRAWL DỮ LIỆU BẢN ÁN - ĐA LUỒNG THEO BATCH")
+        # Lấy cấu hình trước để lấy số luồng
+        max_pages, batch_size, total_batches, num_threads = get_user_configuration()
+        # Khởi động các worker converter với số worker bằng số luồng crawl
+        converter_threads = start_pdf_converter_workers(num_workers=num_threads)
         # Hỏi user có muốn xóa toàn bộ checkpoint không
         reset = input("\nBạn có muốn tải lại từ đầu và xóa toàn bộ checkpoint? (y/N): ").strip().lower()
         if reset == 'y':
@@ -116,8 +121,12 @@ if __name__ == "__main__":
                 print(f"✅ Đã xóa toàn bộ checkpoint trong {CHECKPOINT_DIR}")
             else:
                 print("Không có thư mục checkpoint để xóa.")
-        max_pages, batch_size, total_batches, num_threads = get_user_configuration()
+        # max_pages, batch_size, total_batches, num_threads đã lấy ở trên
         drop_levels = display_checkpoint_status_and_choose(max_pages, batch_size, total_batches)
         run_batches(max_pages, batch_size, total_batches, num_threads, drop_levels)
+        # Đợi xử lý hết hàng đợi PDF
+        from pdf_queue_worker import pdf_queue
+        pdf_queue.join()
+        stop_pdf_converter_workers(converter_threads)
     except KeyboardInterrupt:
         print("\n⏹️ Đã dừng chương trình (Ctrl+C)")

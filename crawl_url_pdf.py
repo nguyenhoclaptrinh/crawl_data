@@ -3,6 +3,7 @@ from requests.exceptions import RequestException, ChunkedEncodingError
 from bs4 import BeautifulSoup
 import urllib3
 import time
+import os
 from config import BASE_DOMAIN, DATASET_DIR
 from pdf_to_text import process_file
 
@@ -39,8 +40,13 @@ def download_pdf(url, session, drop_levels=None, page_num=None, pdf_index=None):
             with open(f"{DATASET_DIR}/{filename}", "wb") as f:
                 f.write(pdf_response.content)
             print(f"Downloaded: {filename}")
+            # Đẩy file vào hàng đợi để convert
+            try:
+                from pdf_queue_worker import pdf_queue
+                pdf_queue.put(os.path.join(DATASET_DIR, filename))
+            except ImportError:
+                print("[Warning] Không thể import pdf_queue_worker để đẩy file vào hàng đợi.")
         else:
             print("No PDF link found on the page.")
     except RequestException as e:
         print(f"Error downloading PDF from {url}: {e}")
-        
